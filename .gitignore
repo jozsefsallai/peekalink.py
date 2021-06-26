@@ -1,0 +1,14 @@
+*.py[c|o]
+*.bak
+*.swp
+
+.idea
+.vscode
+
+build
+dist
+*.egg-info
+
+__pycache__
+
+.venv
