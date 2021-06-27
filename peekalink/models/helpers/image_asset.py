@@ -18,8 +18,8 @@ class ImageAsset:
     """Factory method that turns a JSON dict into an `ImageAsset`."""
     return ImageAsset(
       url    = json['url'],
-      width  = int(json['width']),
-      height = int(json['height'])
+      width  = json['width'],
+      height = json['height']
     )
 
   def to_json_dict(self) -> dict:

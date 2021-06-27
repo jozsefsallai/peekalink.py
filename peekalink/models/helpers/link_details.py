@@ -39,26 +39,13 @@ class YouTubeDetails:
 
     details = YouTubeDetails()
 
-    if 'videoId' in json:
-      details.video_id = json['videoId']
-
-    if 'duration' in json:
-      details.duration = float(json['duration'])
-
-    if 'viewCount' in json:
-      details.view_count = json['viewCount']
-
-    if 'likeCount' in json:
-      details.like_count = json['likeCount']
-
-    if 'dislikeCount' in json:
-      details.dislike_count = json['dislikeCount']
-
-    if 'commentCount' in json:
-      details.comment_count = json['commentCount']
-
-    if 'publishedAt' in json:
-      details.published_at = date_parser.parse(json['publishedAt'])
+    details.video_id = json['videoId'] if 'videoId' in json else None
+    details.duration = float(json['duration']) if 'duration' in json else None
+    details.view_count = json['viewCount'] if 'viewCount' in json else None
+    details.like_count = json['likeCount'] if 'likeCount' in json else None
+    details.dislike_count = json['dislikeCount'] if 'dislikeCount' in json else None
+    details.comment_count = json['commentCount'] if 'commentCount' in json else None
+    details.published_at = date_parser.parse(json['publishedAt']) if 'publishedAt' in json else None
 
     return details
 
@@ -72,7 +59,7 @@ class YouTubeDetails:
       result['videoId'] = self.video_id
 
     if self.duration is not None:
-      result['duration'] = self.duration
+      result['duration'] = str(self.duration)
 
     if self.view_count is not None:
       result['viewCount'] = self.view_count
@@ -87,7 +74,7 @@ class YouTubeDetails:
       result['commentCount'] = self.comment_count
 
     if self.published_at is not None:
-      result['publishedAt'] = self.published_at.isoformat()
+      result['publishedAt'] = self.published_at.isoformat().replace('+00:00', 'Z') # dirty hack but required for accuracy
 
     return result
 
@@ -104,17 +91,10 @@ class TwitterDetails:
 
     details = TwitterDetails()
 
-    if 'statusId' in json:
-      details.status_id = json['statusId']
-
-    if 'retweetCount' in json:
-      details.retweet_count = int(json['retweetCount'])
-
-    if 'likesCount' in json:
-      details.likes_count = int(json['likesCount'])
-
-    if 'publishedAt' in json:
-      details.published_at = date_parser.parse(json['publishedAt'])
+    details.status_id = json['statusId'] if 'statusId' in json else None
+    details.retweet_count = int(json['retweetCount']) if 'retweetCount' in json else None
+    details.likes_count = int(json['likesCount']) if 'likesCount' in json else None
+    details.published_at = date_parser.parse(json['publishedAt']) if 'publishedAt' in json else None
 
     return details
 
@@ -134,7 +114,7 @@ class TwitterDetails:
       result['likesCount'] = self.likes_count
 
     if self.published_at is not None:
-      result['publishedAt'] = self.published_at.isoformat()
+      result['publishedAt'] = self.published_at.isoformat().replace('+00:00', 'Z') # dirty hack but required for accuracy
 
     return result
 
@@ -148,6 +128,9 @@ class LinkDetails:
 
   def __init__(self, type: str):
     self.detail_type = LinkDetailType(type)
+
+    self.__youtube = None
+    self.__twitter = None
 
   def add_youtube_details(self, json: dict):
     """Adds the details of the YouTube video to the current `LinkDetails`

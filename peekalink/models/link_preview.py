@@ -13,7 +13,7 @@ class LinkPreview:
   url: str
   domain: str
   last_updated: datetime
-  next_update: str
+  next_update: datetime
   content_type: ContentType
   mime_type: str
   size: int
@@ -41,32 +41,17 @@ class LinkPreview:
     link_preview.next_update = date_parser.parse(json['nextUpdate'])
     link_preview.content_type = ContentType(json['contentType'])
     link_preview.mime_type = json['mimeType']
-    link_preview.size = json['size']
+    link_preview.size = json['size'] if 'size' in json else None
     link_preview.redirected = json['redirected']
-
-    if 'redirectionUrl' in json:
-      link_preview.redirection_url = json['redirectionUrl']
-
-    if 'redirectionCount' in json:
-      link_preview.redirection_count = json['redirectionCount']
-
-    if 'redirectionTrail' in json:
-      link_preview.redirection_trail = json['redirectionTrail']
-
-    if 'title' in json:
-      link_preview.title = json['title']
-
-    if 'description' in json:
-      link_preview.description = json['description']
-
+    link_preview.redirection_url = json['redirectionUrl'] if 'redirectionUrl' in json else None
+    link_preview.redirection_count = json['redirectionCount'] if 'redirectionCount' in json else None
+    link_preview.redirection_trail = json['redirectionTrail'] if 'redirectionTrail' in json else None
+    link_preview.title = json['title'] if 'title' in json else None
+    link_preview.description = json['description'] if 'description' in json else None
     link_preview.name = json['name']
     link_preview.trackers_detected = json['trackersDetected']
-
-    if 'icon' in json:
-      link_preview.icon = ImageAsset.from_json(json['icon'])
-
-    if 'image' in json:
-      link_preview.image = ImageAsset.from_json(json['image'])
+    link_preview.icon = ImageAsset.from_json(json['icon']) if 'icon' in json else None
+    link_preview.image = ImageAsset.from_json(json['image']) if 'image' in json else None
 
     if 'details' in json and 'type' in json['details']:
       details = LinkDetails(type = json['details']['type'])
@@ -78,6 +63,8 @@ class LinkPreview:
         details.add_twitter_details(json['details'])
 
       link_preview.__details = details
+    else:
+      link_preview.__details = None
 
     return link_preview
 
@@ -115,8 +102,8 @@ class LinkPreview:
 
     result['url'] = self.url
     result['domain'] = self.domain
-    result['lastUpdated'] = self.last_updated.isoformat()
-    result['nextUpdate'] = self.next_update.isoformat()
+    result['lastUpdated'] = self.last_updated.isoformat().replace('+00:00', 'Z')
+    result['nextUpdate'] = self.next_update.isoformat().replace('+00:00', 'Z')
     result['contentType'] = self.content_type.get_name()
     result['mimeType'] = self.mime_type
     result['size'] = self.size
