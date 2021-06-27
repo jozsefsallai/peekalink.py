@@ -7,7 +7,10 @@ with open('README.md', 'r') as f:
   long_description = f.read()
 
 packages = [
-  'peekalink'
+  'peekalink',
+  'peekalink.apis',
+  'peekalink.models',
+  'peekalink.models.helpers'
 ]
 
 setup(
