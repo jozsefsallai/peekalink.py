@@ -36,7 +36,7 @@ class TestYouTubeDetails(unittest.TestCase):
 
   def test_to_json(self):
     details = YouTubeDetails.from_json(self.youtube_details)
-    self.assertDictEqual(self.youtube_details | details.to_json_dict(), self.youtube_details)
+    self.assertDictEqual({**self.youtube_details, **details.to_json_dict()}, self.youtube_details)
 
 class TestTwitterDetails(unittest.TestCase):
   twitter_details = TWITTER_PREVIEW['details']
@@ -52,7 +52,7 @@ class TestTwitterDetails(unittest.TestCase):
 
   def test_to_json(self):
     details = TwitterDetails.from_json(self.twitter_details)
-    self.assertDictEqual(self.twitter_details | details.to_json_dict(), self.twitter_details)
+    self.assertDictEqual({**self.twitter_details, **details.to_json_dict()}, self.twitter_details)
 
 class TestLinkDetails(unittest.TestCase):
   youtube_details = YOUTUBE_PREVIEW['details']
